@@ -9,6 +9,8 @@ const config = require('./config/config')
 
 /* Routes Import */
 const testRoutes = require('./routes/index')
+const userRoutes = require('./routes/users')
+const authRoutes = require('./routes/auth')
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -39,6 +41,8 @@ app.use(cors());
 
 /* Routes */
 app.use('/', testRoutes);
+app.use('/user', userRoutes);
+app.use('/auth', authRoutes);
 
 /* Error handling */
 app.use((req, res, next) => {
