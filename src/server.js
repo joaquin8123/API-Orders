@@ -11,6 +11,7 @@ const config = require('./config/config')
 const testRoutes = require('./routes/index')
 const userRoutes = require('./routes/users')
 const authRoutes = require('./routes/auth')
+const orderRoutes = require('./routes/orders')
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -43,6 +44,7 @@ app.use(cors());
 app.use('/', testRoutes);
 app.use('/user', userRoutes);
 app.use('/auth', authRoutes);
+app.use('/order', orderRoutes);
 
 /* Error handling */
 app.use((req, res, next) => {

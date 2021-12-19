@@ -3,12 +3,12 @@ const schema = mongoose.Schema
 
 const OrderSchema = schema(
     {
-        id: { type: String, required: 'id required.', trim: true, unique: true, lowercase: true },
         description: {type: String},
-        amount: {type: Number},
         total: {type: Number},
-        productos: [{ type: Schema.Types.ObjectId, ref: 'product' }],
-        user: [{ type: Schema.Types.ObjectId, ref: 'user' }]
+        // productos: [{ type: schema.Types.ObjectId, ref: 'product' }],
+        // user: [{ type: schema.Types.ObjectId, ref: 'user' }]
+        productoId: {type: Number},
+        userId: {type: Number},
     },
     {
         timestamps: true
