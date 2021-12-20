@@ -27,7 +27,8 @@ const register = async (req, res) => {
             password: hash,
             firstName,
             lastName,
-            role
+            role,
+            isActive: true
         });
         //await sendMail(registerEmailTemplate(user));
 
