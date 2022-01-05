@@ -8,11 +8,11 @@ const NAMESPACE = 'Middleware';
 
 const extractJWT = (req, res, next) => {
     logging.info(NAMESPACE, `ExtractJWT Method`);
-    let token = req.headers.authorization;
+    let token = req.headers.authorization.split(' ')[1];
     if (token) {
         jwt.verify(token, config.server.token.secret, (error, decode) => {
             if (error) {
-                return sendResponse(error, 'VERIFY_JWT_ERROR', 401, { data: error.message });
+                return sendResponse(res,'VERIFY_JWT_ERROR', 401, { data: error.message });
             } else {
                 res.locals.jwt = decode;
                 next();
