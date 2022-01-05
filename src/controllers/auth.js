@@ -51,7 +51,7 @@ const login = async (req, res) => {
                 if (error) return sendResponse(res, 'LOGIN_ERROR', 401, { data: error });
                 if (result) {
                     const token = signJWT(user)
-                    if(token) return sendResponse(res, 'LOGIN_SUCCESS', 200, { data: token, user })
+                    if(token) return sendResponse(res, 'LOGIN_SUCCESS', 200, { data: token})
                     if(!token) return sendResponse(res, 'SIGN_TOKEN_ERROR ', 401, { data: err })
                 } else return sendResponse(res, 'INCORRECT_PASSWORD', 401, { data: error });
             });

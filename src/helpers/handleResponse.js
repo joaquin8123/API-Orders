@@ -49,7 +49,8 @@ const sendResponse = (res, msgKey, code, payload) => {
     return res.status(code).json({
         success: code >= 200 && code < 300,
         code: code,
-        msg: responseMessages[msgKey],
+        // msg: responseMessages[msgKey],
+        msg: msgKey,
         data
     });
 };
