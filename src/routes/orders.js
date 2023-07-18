@@ -4,10 +4,10 @@ const extractJWT = require('../middlewares/extractJWT')
 const orderController = require('../controllers/orders')
 
 
-router.get('/all', extractJWT, orderController.getOrders);
-router.get('/:orderId', extractJWT, orderController.getOderById);
+router.get('/all', orderController.getOrders);
+router.get('/:orderId', orderController.getOderById);
 
-router.post('/', extractJWT, orderController.createOrder);
+// router.post('/', extractJWT, orderController.createOrder);
 //router.post('/update', extractJWT, orderController.updateOrder);
 
 module.exports = router;
