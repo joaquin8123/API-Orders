@@ -9,20 +9,22 @@ class Client {
     this.phone1 = phone;
     this.date = date;
     this.city_id = 1;
+    this.city_id = 2;
   }
 
   async register() {
     //sanitizar params
     try {
       const sql =
-        "INSERT INTO orders.client(username, password, name, address, phone1, city_id) VALUES (?, ?, ?, ?, ?, ?)";
+        "INSERT INTO orders.client(username, password, name, address, phone1, city_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
       const values = [
         this.username,
         this.password,
         this.name,
         this.address,
         this.phone1,
-        this.city_id
+        this.city_id,
+        this.rol_id
       ];
       const rows = await db.query(sql, values);
       return rows;

@@ -4,7 +4,7 @@ class User {
   constructor(username, password, name) {
     this.username = username;
     this.password = password;
-    this.name = name
+    this.name = name;
   }
 
   async register() {
@@ -22,9 +22,9 @@ class User {
 
   static async getUser(params) {
     const { username, type } = params;
-    const table = type === 'user' ? 'orders.user' : 'orders.client'
+    const table = type === "user" ? "orders.user" : "orders.client";
     try {
-      const sql = `SELECT * FROM ${table} WHERE username="${username}"`;
+      const sql = `SELECT u.id, username, password, rol.name AS role FROM ${table} u LEFT JOIN orders.rol ON rol.id = u.rol_id WHERE username="${username}"`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {

@@ -61,6 +61,40 @@ class Order {
     }
   }
 
+  static async monthlyAmount() {
+    try {
+      const sql = `CALL get_monthly_data();`;
+      const rows = await db.query(sql);
+      return rows[0];
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw error;
+    }
+  }
+
+  static async salesByMonth() {
+    try {
+      const sql = `CALL get_sales_count_by_month();`;
+      const rows = await db.query(sql);
+      return rows[0];
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw error;
+    }
+  }
+
+  static async salesByProduct() {
+    try {
+      const sql = `CALL get_order_count_per_product();`;
+      const rows = await db.query(sql);
+      return rows[0];
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw error;
+    }
+  }
+
+
   static async getOrderById(orderId) {
     try {
       const sql = `SELECT * FROM orders.order WHERE id= ${orderId}`;

@@ -94,4 +94,48 @@ const updateOrder = async (req, res) => {
   }
 };
 
-module.exports = { getOrders, getOderById, createOrder, updateOrder };
+const monthlyAmount = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "monthlyAmount Method");
+    const monthlyData = await Order.monthlyAmount();
+    sendResponse(res, "GET_MONTHLY_AMOUNT_ORDERS", 200, {
+      data: { monthlyData },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+const salesByMonth = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "salesByMonth Method");
+    const salesByMonth = await Order.salesByMonth();
+    sendResponse(res, "GET_MONTHLY_SALES_ORDERS", 200, {
+      data: { salesByMonth },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+const salesByProduct = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "salesByProduct Method");
+    const salesByProduct = await Order.salesByProduct();
+    sendResponse(res, "GET_MONTHLY_SALES_PRODUCT_ORDERS", 200, {
+      data: { salesByProduct },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+module.exports = {
+  getOrders,
+  getOderById,
+  createOrder,
+  updateOrder,
+  monthlyAmount,
+  salesByMonth,
+  salesByProduct,
+};
