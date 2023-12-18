@@ -7,7 +7,8 @@ const NAMESPACE = "User Controller";
 const getOrders = async (req, res) => {
   try {
     logging.info(NAMESPACE, "GetOrders Method");
-    const orders = await Order.getOrders();
+    const offset = req.params.offset || 0;
+    const orders = await Order.getOrders(offset);
     sendResponse(res, "GET_ORDERS", 200, {
       data: { orders, count: orders.length },
     });

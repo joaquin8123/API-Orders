@@ -19,7 +19,7 @@ class Order {
     this.delivery_time = deliveryTime;
   }
 
-  static async getOrders() {
+  static async getOrders(offset) {
     try {
       const sql = `SELECT
       ord.id AS order_id,
@@ -28,7 +28,8 @@ class Order {
       ord.amount,
       ord.status,
       ord.delivery_time,
-      JSON_ARRAYAGG(JSON_OBJECT('id', p.id, 'name', p.name, 'quantity', ol.quantity)) AS products
+      JSON_ARRAYAGG(JSON_OBJECT('id', p.id, 'name', p.name, 'quantity', ol.quantity)) AS products,
+      (SELECT count(*) FROM  orders.order) AS totalItems
     FROM
       orders.order AS ord
     JOIN
@@ -46,7 +47,9 @@ class Order {
         WHEN 'CONFIRMED' THEN 3
         WHEN 'CANCELLED' THEN 4
         ELSE 5 
-      END;`;
+      END
+    LIMIT 10
+    OFFSET ${offset};`;
       const rows = await db.query(sql);
       // Transformar los resultados en un formato más limpio
       const orders = parseData(rows);
@@ -145,6 +148,7 @@ function parseData(row) {
     status: row.status,
     deliveryTime: row.delivery_time,
     products: row.products,
+    totalItems: row.totalItems,
   }));
 }
 module.exports = Order;
