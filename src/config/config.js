@@ -1,29 +1,15 @@
 require('dotenv').config()
 
+const POSTGRES_USER = process.env.USER
+const POSTGRES_PASSWORD = process.env.PASSWORD
+const POSTGRES_DBNAME = process.env.DATABASE
+const POSTGRES_HOST = process.env.HOST
 
-const MONGO_OPTIONS = {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-    socketTimeoutMS: 30000,
-    keepAlive: true,
-    //poolSize: 50,
-    autoIndex: false,
-    retryWrites: false
-};
-
-const MONGO_USERNAME = process.env.MONGO_USERNAME
-const MONGO_PASSWORD = process.env.MONGO_PASSWORD
-const MONGO_DBNAME = process.env.MONGO_DBNAME
-const MONGO_HOST = process.env.MONGO_HOST
-const MONGO_URL = `mongodb+srv://${encodeURIComponent(MONGO_USERNAME)}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DBNAME}`
-
-const MONGO = {
-    host: MONGO_HOST,
-    username: MONGO_USERNAME,
-    password: MONGO_PASSWORD,
-    options: MONGO_OPTIONS,
-    url: MONGO_URL,
-    dbName: MONGO_DBNAME
+const POSTGRES = {
+    host: POSTGRES_HOST,
+    username: POSTGRES_USER,
+    password: POSTGRES_PASSWORD,
+    dbName: POSTGRES_DBNAME
 };
 
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost';
@@ -51,7 +37,7 @@ const EMAIL_CONFIG = {
 };
 
 const config = {
-    mongo: MONGO,
+    postgres: POSTGRES,
     server: SERVER
     //email: EMAIL_CONFIG
 };

@@ -1,4 +1,5 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
+const config = require("./config/config");
 
 class Database {
   constructor() {
@@ -7,14 +8,25 @@ class Database {
     }
 
     this.connection = mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "011096",
-      database: "orders",
+      host: process.env.HOST,
+      user: process.env.USER,
+      password: process.env.PASSWORD,
+      database: process.env.DATABASE,
+    });
+
+    this.connection.connect((err) => {
+      if (err) {
+        console.error("Error al conectar a la base de datos:", err.message);
+      } else {
+        console.log("Conexión exitosa a la base de datos");
+      }
+    });
+
+    this.connection.on("error", (err) => {
+      console.error("Error en la conexión a la base de datos:", err.message);
     });
 
     Database.instance = this;
-    return this;
   }
 
   query(sql, args) {
@@ -42,6 +54,5 @@ class Database {
   }
 }
 
-const dbInstance = new Database(); // Create a single instance of Database
-
-module.exports = dbInstance; // Export the single instance
+const dbInstance = new Database();
+module.exports = dbInstance;

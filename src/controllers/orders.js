@@ -1,21 +1,20 @@
 const logging = require("../config/logging");
 const sendResponse = require("../helpers/handleResponse");
-//models
-const Order = require("../models/order"); // Import the Order class
+const Order = require("../models/order");
+const Product = require("../models/product");
 const NAMESPACE = "User Controller";
 
-async function getOrders(req, res) {
+const getOrders = async (req, res) => {
   try {
     logging.info(NAMESPACE, "GetOrders Method");
     const orders = await Order.getOrders();
     sendResponse(res, "GET_ORDERS", 200, {
       data: { orders, count: orders.length },
     });
-    console.log(orders);
   } catch (error) {
     console.error("Error:", error);
   }
-}
+};
 const getOderById = async (req, res) => {
   try {
     logging.info(NAMESPACE, "GetOrderById Method");
@@ -31,4 +30,61 @@ const getOderById = async (req, res) => {
   }
 };
 
-module.exports = { getOrders, getOderById };
+const createOrder = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "CreateOrder Method");
+    const { products, clientId, discount, quantity, orderLineId } = req.body;
+    //validate stocks de los productos
+    // const isValidStock = await Product.validStock(products);
+    // console.log("isValidStock", isValidStock);
+    // if (!isValidStock) {
+    //   return sendResponse(res, "CREATE_ORDER_STOCK_ERROR", 409, {
+    //     data: "Product out of stock.",
+    //   });
+    // }
+    //calcular amount y delivery_time
+    const { amount, deliveryTime } = await calculateAmountAndDeliveryTime(
+      products
+    );
+    //crear la order
+    const orderInstance = new Order({
+      date: new Date(),
+      clientId,
+      status: "PENDING",
+      products,
+      amount,
+      deliveryTime,
+    });
+    const order = await orderInstance.createOrder();
+    await orderInstance.createOrderLine({
+      orderId: order.insertId,
+      products,
+    });
+    sendResponse(res, "ORDER_SUCCESS", 201, { data: order });
+  } catch (error) {
+    sendResponse(res, "ORDER_ERROR", 500, { data: error });
+  }
+};
+
+const calculateAmountAndDeliveryTime = async (products) => {
+  let amount = 0;
+  let deliveryTime = 0;
+  for (const item of products) {
+    const product = await Product.getProductById(item.productId);
+    amount += product[0].price;
+    deliveryTime += product[0].preparationTime;
+  }
+  return { amount, deliveryTime };
+};
+const updateOrder = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "updateOrder Method");
+    const { orderId, status } = req.body;
+    await Order.updateOrderStatus({ orderId, status });
+    sendResponse(res, "ORDER_UPDATE_SUCCESS", 200);
+  } catch (error) {
+    sendResponse(res, "ORDER_ERROR", 500, { data: error });
+  }
+};
+
+module.exports = { getOrders, getOderById, createOrder, updateOrder };

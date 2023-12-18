@@ -1,13 +1,12 @@
 const logging = require("../config/logging");
 const sendResponse = require("../helpers/handleResponse");
-//models
-const Product = require("../models/product"); 
+const Product = require("../models/product");
 const NAMESPACE = "Product Controller";
 
 async function getProducts(req, res) {
   try {
     logging.info(NAMESPACE, "getProducts Method");
-    const products = await Product.getProducts()
+    const products = await Product.getProducts();
     sendResponse(res, "GET_PRODUCTS", 200, {
       data: { products, count: products.length },
     });
@@ -22,7 +21,7 @@ const getProductById = async (req, res) => {
     const productId = req.params.productId;
     const product = await Product.getProductById(productId);
     if (!product.length) return sendResponse(res, "GET_PRODUCT_NOT_FOUND", 404);
-    return sendResponse(res, "GET_ORDER_SUCCESS", 200, {
+    return sendResponse(res, "GET_PRODUCT_SUCCESS", 200, {
       data: { product: product },
     });
   } catch (error) {
@@ -31,4 +30,41 @@ const getProductById = async (req, res) => {
   }
 };
 
-module.exports = { getProducts, getProductById };
+const createProduct = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "createProduct Method");
+    const { name, description, price, stock, image } = req.body;
+    //validate params
+
+    const productExists = await Product.getProductByName(name);
+    if (productExists.length > 0) {
+      return sendResponse(res, "CREATE_ALREADY_EXISTS", 409, {
+        data: "product already exists.",
+      });
+    }
+    const product = new Product(name, description, price, stock, image);
+
+    return product
+      .createProduct()
+      .then((product) =>
+        sendResponse(res, "CREATE_PRODUCT_SUCCESS", 201, { data: product })
+      )
+      .catch((error) =>
+        sendResponse(res, "CREATE_PRODUCT_ERROR", 500, { data: error })
+      );
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+const updateProduct = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "updateProduct Method");
+    const { productId, active } = req.body;
+    await Product.updateProductStatus({ productId, active });
+    sendResponse(res, "PRODUCT_UPDATE_SUCCESS", 200);
+  } catch (error) {
+    sendResponse(res, "PRODUCT_UPDATE_ERROR", 500, { data: error });
+  }
+};
+module.exports = { getProducts, getProductById, createProduct, updateProduct };

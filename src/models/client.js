@@ -1,0 +1,36 @@
+const db = require("../db");
+
+class Client {
+  constructor(username, password, name, address, phone, date) {
+    this.username = username;
+    this.password = password;
+    this.name = name;
+    this.address = address;
+    this.phone1 = phone;
+    this.date = date;
+    this.city_id = 1;
+  }
+
+  async register() {
+    //sanitizar params
+    try {
+      const sql =
+        "INSERT INTO orders.client(username, password, name, address, phone1, city_id) VALUES (?, ?, ?, ?, ?, ?)";
+      const values = [
+        this.username,
+        this.password,
+        this.name,
+        this.address,
+        this.phone1,
+        this.city_id
+      ];
+      const rows = await db.query(sql, values);
+      return rows;
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw error;
+    }
+  }
+}
+
+module.exports = Client;
