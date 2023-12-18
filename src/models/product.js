@@ -46,19 +46,6 @@ class Product {
       throw error;
     }
   }
-
-  static async validStock(products) {
-    try {
-      const sql = `SELECT checkStockAvailability('${JSON.stringify(
-        products
-      )}') AS result;`;
-      const response = await db.query(sql);
-      return response[0].result;
-    } catch (error) {
-      console.error("Error fetching order:", error);
-      throw error;
-    }
-  }
   async createProduct() {
     try {
       const sql =
@@ -96,10 +83,10 @@ function parseData(row) {
     name: row.name,
     description: row.description,
     price: row.price,
-    active: row.active === 1 ? 'activo' : 'inactivo',
+    active: row.active === 1 ? "activo" : "inactivo",
     stock: row.stock,
     image: row.image,
-    preparationTime: row.preparation_time
+    preparationTime: row.preparation_time,
   }));
 }
 module.exports = Product;

@@ -33,15 +33,21 @@ const getOderById = async (req, res) => {
 const createOrder = async (req, res) => {
   try {
     logging.info(NAMESPACE, "CreateOrder Method");
-    const { products, clientId, discount, quantity, orderLineId } = req.body;
+    const { products, clientId } = req.body;
     //validate stocks de los productos
-    // const isValidStock = await Product.validStock(products);
-    // console.log("isValidStock", isValidStock);
-    // if (!isValidStock) {
-    //   return sendResponse(res, "CREATE_ORDER_STOCK_ERROR", 409, {
-    //     data: "Product out of stock.",
-    //   });
-    // }
+    let isValidStock = true;
+    for (const product of products) {
+      const productDb = await Product.getProductById(product.productId);
+      if (product.quantity > productDb[0].stock) {
+        isValidStock = false;
+        break;
+      }
+    }
+    if (!isValidStock) {
+      return sendResponse(res, "CREATE_ORDER_STOCK_ERROR", 409, {
+        data: "Product out of stock",
+      });
+    }
     //calcular amount y delivery_time
     const { amount, deliveryTime } = await calculateAmountAndDeliveryTime(
       products
