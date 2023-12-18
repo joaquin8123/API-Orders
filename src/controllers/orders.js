@@ -71,7 +71,7 @@ const calculateAmountAndDeliveryTime = async (products) => {
   let deliveryTime = 0;
   for (const item of products) {
     const product = await Product.getProductById(item.productId);
-    amount += product[0].price;
+    amount += product[0].price * item.quantity;
     deliveryTime += product[0].preparationTime;
   }
   return { amount, deliveryTime };
