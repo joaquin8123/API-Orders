@@ -31,6 +31,21 @@ const getOderById = async (req, res) => {
   }
 };
 
+const getOrdersByClient = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "GetOrderByClientId Method");
+    const clientId = req.params.clientId;
+    const orders = await Order.getOrderByClientId(clientId);
+    if (!orders.length) return sendResponse(res, "GET_ORDERS_NOT_FOUND", 404);
+    return sendResponse(res, "GET_ORDERS_SUCCESS", 200, {
+      data: { orders },
+    });
+  } catch (error) {
+    console.error(error);
+    return sendResponse(res, "GET_ORDERS_ERROR", 500, { data: { error } });
+  }
+};
+
 const createOrder = async (req, res) => {
   try {
     logging.info(NAMESPACE, "CreateOrder Method");
@@ -133,6 +148,7 @@ const salesByProduct = async (req, res) => {
 module.exports = {
   getOrders,
   getOderById,
+  getOrdersByClient,
   createOrder,
   updateOrder,
   monthlyAmount,

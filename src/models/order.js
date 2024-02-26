@@ -94,7 +94,6 @@ class Order {
     }
   }
 
-
   static async getOrderById(orderId) {
     try {
       const sql = `SELECT * FROM orders.order WHERE id= ${orderId}`;
@@ -104,6 +103,21 @@ class Order {
       const order = parseData(row);
 
       return order;
+    } catch (error) {
+      console.error("Error fetching order:", error);
+      throw error;
+    }
+  }
+
+  static async getOrderByClientId(clientId) {
+    try {
+      const sql = `SELECT id, status, date, amount, delivery_time FROM orders.order WHERE client_id= ${clientId} ORDER BY orders.order.date DESC`;
+      const row = await db.query(sql);
+
+      // Transformar los resultados en un formato más limpio
+      const orders = parseData(row);
+
+      return orders;
     } catch (error) {
       console.error("Error fetching order:", error);
       throw error;

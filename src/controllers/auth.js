@@ -45,9 +45,11 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  console.log("Login Method");
   logging.info(NAMESPACE, "Login Method");
   let { username, password, type = "user" } = req.body;
   const user = await User.getUser({ username, type });
+  console.log("user", user);
   if (!user.length) {
     return sendResponse(res, "UNEXISTENT_USER", 401);
   }
@@ -65,7 +67,5 @@ const login = async (req, res) => {
     } else return sendResponse(res, "INCORRECT_PASSWORD", 401, { data: error });
   });
 };
-
-
 
 module.exports = { register, login };
