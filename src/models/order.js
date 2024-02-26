@@ -96,7 +96,7 @@ class Order {
 
   static async getOrderById(orderId) {
     try {
-      const sql = `SELECT * FROM orders.order WHERE id= ${orderId}`;
+      const sql = `SELECT cli.name AS name,ord.date,ord.amount,ord.status,ord.delivery_time FROM orders.order ord JOIN orders.client cli ON cli.id = ord.client_id  WHERE ord.id=${orderId}`;
       const row = await db.query(sql);
 
       // Transformar los resultados en un formato más limpio
