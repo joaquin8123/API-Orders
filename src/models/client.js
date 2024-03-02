@@ -24,12 +24,24 @@ class Client {
         this.address,
         this.phone1,
         this.city_id,
-        this.rol_id
+        this.rol_id,
       ];
       const rows = await db.query(sql, values);
       return rows;
     } catch (error) {
       console.error("Error fetching orders:", error);
+      throw error;
+    }
+  }
+
+  static async getClient(params) {
+    const { clientId } = params;
+    try {
+      const sql = `SELECT id, name, username, password FROM orders.client WHERE id=${clientId}`;
+      const rows = await db.query(sql);
+      return rows[0];
+    } catch (error) {
+      console.error("Error fetching user:", error);
       throw error;
     }
   }

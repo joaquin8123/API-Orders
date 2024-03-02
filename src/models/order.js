@@ -41,15 +41,44 @@ class Order {
     GROUP BY
       ord.id
     ORDER BY
-      CASE ord.status
-        WHEN 'PENDING' THEN 1
-        WHEN 'PROCESSING' THEN 2
-        WHEN 'CONFIRMED' THEN 3
-        WHEN 'CANCELLED' THEN 4
-        ELSE 5 
-      END
+      ord.date DESC
     LIMIT 10
     OFFSET ${offset};`;
+      const rows = await db.query(sql);
+      // Transformar los resultados en un formato más limpio
+      const orders = parseData(rows);
+
+      return orders;
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw error;
+    }
+  }
+
+  static async getAllOrdersByStatus(status) {
+    try {
+      const sql = `SELECT
+      ord.id AS order_id,
+      ord.date,
+      cli.name,
+      ord.amount,
+      ord.status,
+      ord.delivery_time,
+      JSON_ARRAYAGG(JSON_OBJECT('id', p.id, 'name', p.name, 'quantity', ol.quantity)) AS products
+    FROM
+      orders.order AS ord
+    JOIN
+      orderline AS ol ON ord.id = ol.order_id
+    JOIN
+      client AS cli ON cli.id = ord.client_id
+    JOIN
+      product AS p ON ol.product_id = p.id
+    WHERE
+    ord.status = '${status}'
+    GROUP BY
+      ord.id
+    ORDER BY
+      ord.date DESC;`;
       const rows = await db.query(sql);
       // Transformar los resultados en un formato más limpio
       const orders = parseData(rows);
@@ -111,7 +140,7 @@ class Order {
 
   static async getOrderByClientId(clientId) {
     try {
-      const sql = `SELECT id, status, date, amount, delivery_time FROM orders.order WHERE client_id= ${clientId} ORDER BY orders.order.date DESC`;
+      const sql = `SELECT id AS order_id, status, date, amount, delivery_time FROM orders.order WHERE client_id= ${clientId} ORDER BY orders.order.date DESC`;
       const row = await db.query(sql);
 
       // Transformar los resultados en un formato más limpio
@@ -190,7 +219,7 @@ class Order {
 function parseData(row) {
   return row.map((row) => ({
     orderId: row.order_id,
-    date: format(new Date(row.date), "dd/MM/yyyy"),
+    date: format(new Date(row.date), "dd/MM/yyyy HH:mm:ss"),
     amount: row.amount,
     clientName: row.name,
     status: row.status,

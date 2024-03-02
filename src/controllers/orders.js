@@ -1,5 +1,6 @@
 const logging = require("../config/logging");
 const sendResponse = require("../helpers/handleResponse");
+const Client = require("../models/client");
 const Order = require("../models/order");
 const Product = require("../models/product");
 const NAMESPACE = "User Controller";
@@ -16,6 +17,20 @@ const getOrders = async (req, res) => {
     console.error("Error:", error);
   }
 };
+
+const getAllOrders = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "GetAllOrders Method");
+    const status = req.params.status;
+    const orders = await Order.getAllOrdersByStatus(status);
+    sendResponse(res, "GET_ALL_ORDERS", 200, {
+      data: { orders, count: orders.length },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 const getOderById = async (req, res) => {
   try {
     logging.info(NAMESPACE, "GetOrderById Method");
@@ -82,6 +97,19 @@ const createOrder = async (req, res) => {
       orderId: order.insertId,
       products,
     });
+    const client = await Client.getClient({ clientId });
+    const io = req.app.get("socketio");
+    io.emit("order-updated", {
+      source: "backoffice",
+      order: {
+        orderId: order.insertId,
+        client: client.name,
+        status: "PENDING",
+        amount,
+        date: orderInstance.date,
+        deliveryTime,
+      },
+    });
     sendResponse(res, "ORDER_SUCCESS", 201, { data: order });
   } catch (error) {
     sendResponse(res, "ORDER_ERROR", 500, { data: error });
@@ -103,6 +131,8 @@ const updateOrder = async (req, res) => {
     logging.info(NAMESPACE, "updateOrder Method");
     const { orderId, status } = req.body;
     await Order.updateOrderStatus({ orderId, status });
+    const io = req.app.get("socketio");
+    io.emit("order-updated", { source: "app", orderId, status });
     sendResponse(res, "ORDER_UPDATE_SUCCESS", 200);
   } catch (error) {
     sendResponse(res, "ORDER_ERROR", 500, { data: error });
@@ -154,4 +184,5 @@ module.exports = {
   monthlyAmount,
   salesByMonth,
   salesByProduct,
+  getAllOrders,
 };

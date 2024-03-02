@@ -2,6 +2,7 @@ const http = require("http");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const socketIO = require("socket.io");
 
 const logging = require("./config/logging");
 const config = require("./config/config");
@@ -56,6 +57,9 @@ app.use((req, res, next) => {
 
 /* Create the server */
 const httpServer = http.createServer(app);
+const io = socketIO(httpServer);
+
+app.set("socketio", io);
 httpServer.listen(config.server.port, () =>
   logging.info(
     NAMESPACE,

@@ -10,6 +10,7 @@ router.get("/client/:clientId", extractJWT, orderController.getOrdersByClient);
 router.get("/id/:orderId", extractJWT, orderController.getOderById);
 router.get("/:offset", extractJWT, orderController.getOrders);
 router.get("/", extractJWT, orderController.getOrders);
+router.get("/all/:status", extractJWT, orderController.getAllOrders);
 router.post("/", extractJWT, orderController.createOrder);
 router.put("/", extractJWT, orderController.updateOrder);
 
