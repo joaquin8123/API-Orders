@@ -1,15 +1,15 @@
 const db = require("../db");
 
 class Client {
-  constructor(username, password, name, address, phone, date) {
+  constructor(username, password, name, address, phone, date, cityId, rolId) {
     this.username = username;
     this.password = password;
     this.name = name;
     this.address = address;
     this.phone1 = phone;
     this.date = date;
-    this.city_id = 1;
-    this.city_id = 2;
+    this.city_id = cityId;
+    this.rol_id = rolId;
   }
 
   async register() {

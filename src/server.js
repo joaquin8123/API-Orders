@@ -12,6 +12,8 @@ const testRoutes = require("./routes/index");
 const productRoutes = require("./routes/product");
 const authRoutes = require("./routes/auth");
 const orderRoutes = require("./routes/orders");
+const userRoutes = require("./routes/user");
+const groupRoutes = require("./routes/group");
 
 const NAMESPACE = "Server";
 const app = express();
@@ -46,6 +48,8 @@ app.use("/", testRoutes);
 app.use("/product", productRoutes);
 app.use("/auth", authRoutes);
 app.use("/order", orderRoutes);
+app.use("/user", userRoutes);
+app.use("/group", groupRoutes);
 
 /* Error handling */
 app.use((req, res, next) => {

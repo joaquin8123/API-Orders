@@ -12,7 +12,19 @@ const SALT_ROUNDS = 10;
 
 const register = async (req, res) => {
   logging.info(NAMESPACE, `Register Method`);
-  const { username, password, type, name, address, phone } = req.body;
+  const {
+    username,
+    password,
+    type,
+    name,
+    address,
+    phone,
+    rolId,
+    groupId,
+    cityId,
+    active = true,
+  } = req.body;
+
   bcrypt.hash(password, SALT_ROUNDS, async (error, hash) => {
     if (error) sendResponse(res, "HASH_ERROR", 500, { data: error });
     const userExists = await User.getUser({ username, type });
@@ -22,7 +34,7 @@ const register = async (req, res) => {
     }
 
     if (type === "user") {
-      const user = new User(username, hash);
+      const user = new User(username, hash, rolId, groupId, active);
       return user
         .register()
         .then((user) =>
@@ -32,7 +44,15 @@ const register = async (req, res) => {
           sendResponse(res, "REGISTER_USER_ERROR", 500, { data: error })
         );
     }
-    const client = new Client(username, hash, name, address, phone);
+    const client = new Client(
+      username,
+      hash,
+      name,
+      address,
+      phone,
+      cityId,
+      rolId
+    );
     return client
       .register()
       .then((client) =>
@@ -45,13 +65,14 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  console.log("Login Method");
   logging.info(NAMESPACE, "Login Method");
   let { username, password, type = "user" } = req.body;
   const user = await User.getUser({ username, type });
-  console.log("user", user);
   if (!user.length) {
     return sendResponse(res, "UNEXISTENT_USER", 401);
+  }
+  if (!user[0].active) {
+    return sendResponse(res, "UNACTIVE_USER", 401);
   }
   bcrypt.compare(password, user[0].password, (error, result) => {
     if (error) return sendResponse(res, "LOGIN_ERROR", 401, { data: error });
@@ -68,4 +89,36 @@ const login = async (req, res) => {
   });
 };
 
-module.exports = { register, login };
+const resetPassword = async (req, res) => {
+  logging.info(NAMESPACE, "ResetPassword Method");
+  let {
+    username,
+    password,
+    newPassword,
+    type = "user",
+    isReset = false,
+  } = req.body;
+  const user = await User.getUser({ username, type });
+  console.log("user", user);
+  if (!user.length) {
+    return sendResponse(res, "UNEXISTENT_USER", 401);
+  }
+  if (isReset) {
+    await User.updateUser({ userId: user[0].id, password: null });
+    return sendResponse(res, "RESET_PASSWORD_SUCCESS", 200, {});
+  }
+  bcrypt.compare(password, user[0].password, async (error, result) => {
+    if (error) return sendResponse(res, "RESET_ERROR", 401, { data: error });
+    if (result) {
+      const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+      console.log("passwordHash", passwordHash);
+      await User.updateUser({ userId: user[0].id, password: passwordHash });
+      return sendResponse(res, "NEW_PASSWORD_SUCCESS", 200, {});
+    } else
+      return sendResponse(res, "RESET_INCORRECT_PASSWORD", 401, {
+        data: error,
+      });
+  });
+};
+
+module.exports = { register, login, resetPassword };

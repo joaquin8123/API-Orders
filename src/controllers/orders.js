@@ -3,7 +3,7 @@ const sendResponse = require("../helpers/handleResponse");
 const Client = require("../models/client");
 const Order = require("../models/order");
 const Product = require("../models/product");
-const NAMESPACE = "User Controller";
+const NAMESPACE = "Orders Controller";
 
 const getOrders = async (req, res) => {
   try {
