@@ -99,7 +99,6 @@ const resetPassword = async (req, res) => {
     isReset = false,
   } = req.body;
   const user = await User.getUser({ username, type });
-  console.log("user", user);
   if (!user.length) {
     return sendResponse(res, "UNEXISTENT_USER", 401);
   }
@@ -111,7 +110,6 @@ const resetPassword = async (req, res) => {
     if (error) return sendResponse(res, "RESET_ERROR", 401, { data: error });
     if (result) {
       const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
-      console.log("passwordHash", passwordHash);
       await User.updateUser({ userId: user[0].id, password: passwordHash });
       return sendResponse(res, "NEW_PASSWORD_SUCCESS", 200, {});
     } else

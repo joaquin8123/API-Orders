@@ -19,11 +19,22 @@ const getGroupById = async (req, res) => {
 const createGroup = async (req, res) => {
   try {
     logging.info(NAMESPACE, "createGroup Method");
-    const { name, active } = params;
-    await Group.getGroupByName(name);
-    sendResponse(res, "UPDATE_ACTIVE_GROUP", 200, {});
+    const { name, permissionsIds, active } = req.body;
+    const groupNameExists = await Group.getGroupByName(name);
+    if (groupNameExists.length > 0) {
+      return sendResponse(res, "CREATE_GROUP_ALREADY_EXISTS", 409, {
+        data: "group already exists.",
+      });
+    }
+    const groupInstance = new Group(name, active);
+    const group = await groupInstance.createGroup();
+    await groupInstance.createGroupPermission({
+      groupId: group.insertId,
+      permissionsIds,
+    });
+    sendResponse(res, "CREATE_GRROUP_SUCCESS", 201, { data: group });
   } catch (error) {
-    console.error("Error:", error);
+    sendResponse(res, "CREATE_GRROUP_ERROR", 500, { data: error });
   }
 };
 const updateGroup = async (req, res) => {
@@ -60,10 +71,37 @@ const getAllRols = async (req, res) => {
   }
 };
 
+const getAllPermissions = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "getAllPermissions Method");
+    const permissions = await Group.getAllPermissions();
+    sendResponse(res, "GET_ALL_PERMISSIONS", 200, {
+      data: { permissions },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+const getPermissionsByUserId = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "getPermissionsByUserId Method");
+    const userId = req.params.userId;
+    const permissions = await Group.getPermissionsByUserId(userId);
+    sendResponse(res, "GET_PERMISSIONS", 200, {
+      data: { permissions: permissions[0].permissions },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 module.exports = {
   updateGroup,
   getAllRols,
   getAllGroups,
   getGroupById,
   createGroup,
+  getAllPermissions,
+  getPermissionsByUserId,
 };
