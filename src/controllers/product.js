@@ -14,6 +14,17 @@ async function getProducts(req, res) {
     console.error("Error:", error);
   }
 }
+async function getProductsApp(req, res) {
+  try {
+    logging.info(NAMESPACE, "getProductsApp Method");
+    const products = await Product.getProductsApp();
+    sendResponse(res, "GET_PRODUCTS", 200, {
+      data: { products, count: products.length },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
 const getProductById = async (req, res) => {
   try {
@@ -67,4 +78,10 @@ const updateProduct = async (req, res) => {
     sendResponse(res, "PRODUCT_UPDATE_ERROR", 500, { data: error });
   }
 };
-module.exports = { getProducts, getProductById, createProduct, updateProduct };
+module.exports = {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  getProductsApp,
+};

@@ -23,6 +23,19 @@ class Product {
     }
   }
 
+  static async getProductsApp() {
+    try {
+      const sql = "SELECT * FROM orders.product WHERE active =true";
+      const rows = await db.query(sql);
+      const products = parseData(rows);
+
+      return products;
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw error;
+    }
+  }
+
   static async getProductById(productId) {
     try {
       const sql = `SELECT * FROM orders.product WHERE id= ${productId}`;

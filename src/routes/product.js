@@ -3,6 +3,7 @@ const router = express.Router();
 const extractJWT = require("../middlewares/extractJWT");
 const productController = require("../controllers/product");
 
+router.get("/app", extractJWT, productController.getProductsApp);
 router.get("/", extractJWT, productController.getProducts);
 router.get("/:productId", extractJWT, productController.getProductById);
 router.post("/", extractJWT, productController.createProduct);
