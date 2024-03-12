@@ -17,7 +17,7 @@ class Group {
   FROM
       user u
       LEFT JOIN rol ON rol.id = u.rol_id
-      LEFT JOIN group gr ON gr.id = u.group_id
+      LEFT JOIN \`group\` gr ON gr.id = u.group_id
   `;
       const rows = await db.query(sql);
       return rows;
@@ -40,7 +40,7 @@ class Group {
   static async getAllGroups() {
     try {
       const sql = `SELECT g.id as id, g.name as name, JSON_ARRAYAGG(p.name) AS permissions
-      FROM group g
+      FROM \`group\` g
       JOIN group_permission gp ON g.id = gp.group_id
       JOIN permission p ON gp.permission_id = p.id
       GROUP BY g.id, g.name;`;
@@ -66,7 +66,7 @@ class Group {
   static async getGroupById(groupId) {
     try {
       const sql = `SELECT g.id, g.name, JSON_ARRAYAGG(p.name) AS permissions
-      FROM group g
+      FROM \`group\` g
       JOIN group_permission gp ON g.id = gp.group_id
       JOIN permission p ON gp.permission_id = p.id
       WHERE g.id = ${groupId}
@@ -101,7 +101,7 @@ class Group {
           return `${key} = ${value}`;
         })
         .join(", ");
-      const sql = `UPDATE group SET ${updateSet} WHERE id = ${params.groupId};`;
+      const sql = `UPDATE  \`group\` SET ${updateSet} WHERE id = ${params.groupId};`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {
@@ -112,7 +112,7 @@ class Group {
 
   async createGroup() {
     try {
-      const sql = "INSERT INTO group(name) VALUES (?)";
+      const sql = "INSERT INTO  \`group\`(name) VALUES (?)";
       const values = [this.name];
       const rows = await db.query(sql, values);
       return rows;
@@ -156,6 +156,27 @@ class Group {
       return rows;
     } catch (error) {
       console.error("Error fetching user:", error);
+      throw error;
+    }
+  }
+
+  static async updateGroupPermissions(params) {
+    const { groupId, permissionsIds } = params;
+    try {
+      for (const permissionId of permissionsIds) {
+        const existingPermission = await db.query(
+          `SELECT * FROM group_permission WHERE group_id = ${groupId} AND permission_id = ${permissionId}`
+        );
+        if (!existingPermission || existingPermission.length === 0) {
+          await db.query(
+            "INSERT INTO group_permission(permission_id, group_id) VALUES (?, ?)",
+            [permissionId, groupId]
+          );
+        }
+      }
+      return "Success";
+    } catch (error) {
+      console.error("Error updating group permissions:", error);
       throw error;
     }
   }

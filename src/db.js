@@ -21,7 +21,12 @@ class Database {
               ? process.env.TEST_DATABASE
               : process.env.DATABASE,
         });
-
+        console.log(
+          "conectado a la db:",
+          process.env.NODE_ENV === "test"
+            ? process.env.TEST_DATABASE
+            : process.env.DATABASE
+        );
         this.connection.on("error", (err) => {
           console.error(
             "Error en la conexión a la base de datos:",
@@ -43,6 +48,7 @@ class Database {
 
   async query(sql, args) {
     try {
+      console.log(sql)
       const [rows] = await this.connection.execute(sql, args);
       return rows;
     } catch (error) {

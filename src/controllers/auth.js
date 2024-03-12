@@ -58,9 +58,10 @@ const register = async (req, res) => {
       name,
       address,
       phone,
-      cityId,
-      rolId,
-      date,
+      cityId: 1,
+      rolId: 1,
+      date: "2024-03-12",
+      active: true,
     });
     const registeredClient = await client.register();
     return sendResponse(res, "REGISTER_CLIENT_SUCCESS", 201, {
@@ -78,7 +79,6 @@ const login = async (req, res) => {
   try {
     let { username, password, type = "user" } = req.body;
     const user = await User.getUser({ username, type });
-
     if (!user.length) {
       return sendResponse(res, "UNEXISTENT_USER", 401);
     }
@@ -88,6 +88,7 @@ const login = async (req, res) => {
     }
 
     const result = await bcrypt.compare(password, user[0].password);
+
     if (result) {
       const token = signJWT(user);
 

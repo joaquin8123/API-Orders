@@ -10,6 +10,7 @@ class Client {
     date,
     cityId,
     rolId,
+    active,
   }) {
     this.username = username;
     this.password = password;
@@ -19,13 +20,14 @@ class Client {
     this.date = date;
     this.city_id = cityId;
     this.rol_id = rolId;
+    this.active = active;
   }
 
   async register() {
     //sanitizar params
     try {
       const sql =
-        "INSERT INTO client(username, password, name, address, phone1, date, city_id, rol_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO client(username, password, name, address, phone1, date, city_id, rol_id,active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       const values = [
         this.username,
         this.password,
@@ -35,6 +37,7 @@ class Client {
         this.date,
         this.city_id,
         this.rol_id,
+        this.active,
       ];
       const rows = await db.query(sql, values);
       return rows;

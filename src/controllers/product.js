@@ -44,7 +44,14 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     logging.info(NAMESPACE, "createProduct Method");
-    const { name, description, price, stock, image, active = true } = req.body;
+    const {
+      name,
+      description,
+      price,
+      stock,
+      image = "",
+      active = true,
+    } = req.body;
     //validate params
 
     const productExists = await Product.getProductByName(name);
@@ -61,6 +68,8 @@ const createProduct = async (req, res) => {
       image,
       active,
     });
+
+    console.log("product", product);
 
     return product
       .createProduct()

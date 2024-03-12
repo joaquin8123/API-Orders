@@ -96,8 +96,19 @@ const getPermissionsByUserId = async (req, res) => {
   }
 };
 
+const updateGroupPermissions = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "updateGroupPermissions Method");
+    await Group.updateGroupPermissions(req.body);
+    sendResponse(res, "UPDATE_GROUP_PERMISSIONS", 200, {});
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 module.exports = {
   updateGroup,
+  updateGroupPermissions,
   getAllRols,
   getAllGroups,
   getGroupById,

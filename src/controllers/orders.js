@@ -98,18 +98,18 @@ const createOrder = async (req, res) => {
       products,
     });
     const client = await Client.getClient({ clientId });
-    // const io = req.app.get("socketio");
-    // io.emit("order-updated", {
-    //   source: "backoffice",
-    //   order: {
-    //     orderId: order.insertId,
-    //     client: client.name,
-    //     status: "PENDING",
-    //     amount,
-    //     date: orderInstance.date,
-    //     deliveryTime,
-    //   },
-    // });
+    const io = req.app.get("socketio");
+    io.emit("order-updated", {
+      source: "backoffice",
+      order: {
+        orderId: order.insertId,
+        client: client.name,
+        status: "PENDING",
+        amount,
+        date: orderInstance.date,
+        deliveryTime,
+      },
+    });
     return sendResponse(res, "ORDER_SUCCESS", 201, { data: order });
   } catch (error) {
     return sendResponse(res, "ORDER_ERROR", 500, { data: error });
@@ -131,8 +131,8 @@ const updateOrder = async (req, res) => {
     logging.info(NAMESPACE, "updateOrder Method");
     const { orderId, status } = req.body;
     await Order.updateOrderStatus({ orderId, status });
-    // const io = req.app.get("socketio");
-    // io.emit("order-updated", { source: "app", orderId, status });
+    const io = req.app.get("socketio");
+    io.emit("order-updated", { source: "app", orderId, status });
     return sendResponse(res, "ORDER_UPDATE_SUCCESS", 200);
   } catch (error) {
     return sendResponse(res, "ORDER_ERROR", 500, { data: error });
