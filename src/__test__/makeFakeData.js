@@ -35,19 +35,73 @@ const makeFakeRol = (params) => {
   };
 };
 
+const makeFakeGroup = (params) => {
+  return {
+    id: 1,
+    name: "ADMIN",
+    ...params,
+  };
+};
+
+const makeFakeUser = (params) => {
+  return {
+    id: 1,
+    name: faker.names.name(),
+    address: faker.address.streetName(),
+    date: "2024-03-15",
+    cityId: 1,
+    phone: faker.phone.number(),
+    dni: String(faker.random.number(8)),
+    username: faker.internet.userName(),
+    password: faker.internet.password(6),
+    rolId: 1,
+    groupId: 1,
+    active: true,
+    type: "user",
+    ...params,
+  };
+};
 const makeFakeClient = (params) => {
   return {
     id: 1,
     name: faker.names.name(),
     address: faker.address.streetName(),
     date: "2024-03-15",
-    city_id: 1,
-    phone1: faker.phone.number(),
-    phone2: faker.phone.number(),
+    cityId: 1,
+    phone: faker.phone.number(),
     dni: String(faker.random.number(8)),
     username: faker.internet.userName(),
     password: faker.internet.password(6),
-    rol_id: 1,
+    rolId: 1,
+    active: true,
+    type: "client",
+    ...params,
+  };
+};
+
+const makeFakeOrder = (params) => {
+  return {
+    clientId: 1,
+    products: [
+      {
+        productId: 1,
+        quantity: 2,
+        discount: 0,
+      },
+    ],
+    ...params,
+  };
+};
+
+const makeFakeProduct = (params) => {
+  return {
+    id: 1,
+    name: faker.names.name(),
+    description: faker.address.streetName(),
+    price: faker.random.number(),
+    stock: faker.random.number(),
+    image: "",
+    active: 1,
     ...params,
   };
 };
@@ -57,5 +111,9 @@ module.exports = {
   makeFakeState,
   makeFakeCity,
   makeFakeRol,
+  makeFakeUser,
   makeFakeClient,
+  makeFakeGroup,
+  makeFakeProduct,
+  makeFakeOrder,
 };

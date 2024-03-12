@@ -8,7 +8,6 @@ const logging = require("./config/logging");
 const config = require("./config/config");
 
 /* Routes Import */
-const testRoutes = require("./routes/index");
 const productRoutes = require("./routes/product");
 const authRoutes = require("./routes/auth");
 const orderRoutes = require("./routes/orders");
@@ -44,7 +43,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 /* Routes */
-app.use("/", testRoutes);
 app.use("/product", productRoutes);
 app.use("/auth", authRoutes);
 app.use("/order", orderRoutes);

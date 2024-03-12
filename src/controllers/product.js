@@ -7,7 +7,7 @@ async function getProducts(req, res) {
   try {
     logging.info(NAMESPACE, "getProducts Method");
     const products = await Product.getProducts();
-    sendResponse(res, "GET_PRODUCTS", 200, {
+    return sendResponse(res, "GET_PRODUCTS_SUCCESS", 200, {
       data: { products, count: products.length },
     });
   } catch (error) {
@@ -18,7 +18,7 @@ async function getProductsApp(req, res) {
   try {
     logging.info(NAMESPACE, "getProductsApp Method");
     const products = await Product.getProductsApp();
-    sendResponse(res, "GET_PRODUCTS", 200, {
+    return sendResponse(res, "GET_PRODUCTS_SUCCESS", 200, {
       data: { products, count: products.length },
     });
   } catch (error) {
@@ -44,7 +44,7 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     logging.info(NAMESPACE, "createProduct Method");
-    const { name, description, price, stock, image } = req.body;
+    const { name, description, price, stock, image, active = true } = req.body;
     //validate params
 
     const productExists = await Product.getProductByName(name);
@@ -53,7 +53,14 @@ const createProduct = async (req, res) => {
         data: "product already exists.",
       });
     }
-    const product = new Product(name, description, price, stock, image);
+    const product = new Product({
+      name,
+      description,
+      price,
+      stock,
+      image,
+      active,
+    });
 
     return product
       .createProduct()
@@ -73,9 +80,9 @@ const updateProduct = async (req, res) => {
     logging.info(NAMESPACE, "updateProduct Method");
     const { productId, active } = req.body;
     await Product.updateProductStatus({ productId, active });
-    sendResponse(res, "PRODUCT_UPDATE_SUCCESS", 200);
+    return sendResponse(res, "PRODUCT_UPDATE_SUCCESS", 200);
   } catch (error) {
-    sendResponse(res, "PRODUCT_UPDATE_ERROR", 500, { data: error });
+    return sendResponse(res, "PRODUCT_UPDATE_ERROR", 500, { data: error });
   }
 };
 module.exports = {

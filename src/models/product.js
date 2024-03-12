@@ -1,18 +1,18 @@
 const db = require("../db");
 
 class Product {
-  constructor(name, description, price, stock, image) {
+  constructor({ name, description, price, stock, image, active }) {
     this.name = name;
     this.description = description;
     this.price = price;
     this.stock = stock;
     this.image = image;
-    this.active = true;
+    this.active = active;
   }
 
   static async getProducts() {
     try {
-      const sql = "SELECT * FROM orders.product";
+      const sql = "SELECT * FROM product";
       const rows = await db.query(sql);
       const products = parseData(rows);
 
@@ -25,7 +25,7 @@ class Product {
 
   static async getProductsApp() {
     try {
-      const sql = "SELECT * FROM orders.product WHERE active =true";
+      const sql = "SELECT * FROM product WHERE active =true";
       const rows = await db.query(sql);
       const products = parseData(rows);
 
@@ -38,7 +38,7 @@ class Product {
 
   static async getProductById(productId) {
     try {
-      const sql = `SELECT * FROM orders.product WHERE id= ${productId}`;
+      const sql = `SELECT * FROM product WHERE id= ${productId}`;
       const row = await db.query(sql);
       const product = parseData(row);
 
@@ -50,7 +50,7 @@ class Product {
   }
   static async getProductByName(name) {
     try {
-      const sql = `SELECT * FROM orders.product WHERE name= '${name}'`;
+      const sql = `SELECT * FROM product WHERE name= '${name}'`;
       const row = await db.query(sql);
       const product = parseData(row);
       return product;
@@ -62,13 +62,14 @@ class Product {
   async createProduct() {
     try {
       const sql =
-        "INSERT INTO orders.product(name, description, price, stock, image) VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO product(name, description, price, stock, image, active) VALUES (?, ?, ?, ?, ?, ?)";
       const values = [
         this.name,
         this.description,
         this.price,
         this.stock,
         this.image,
+        this.active,
       ];
       const rows = await db.query(sql, values);
       return rows;
@@ -80,7 +81,7 @@ class Product {
   static async updateProductStatus({ productId, active }) {
     //sanitizar paramss
     try {
-      const sql = `UPDATE orders.product SET active = ${active} WHERE id = ${productId};`;
+      const sql = `UPDATE product SET active = ${active} WHERE id = ${productId};`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {

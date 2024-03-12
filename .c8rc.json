@@ -1,0 +1,33 @@
+{
+  "reporter": [
+    "lcov",
+    "html",
+    "text",
+    "text-summary"
+  ],
+  "exclude": [
+    ".build/**",
+    "**/__test__/**",
+    "config/*",
+    "coverage/",
+    "node_modules/",
+    "**/helpers/",
+    "**/constants/",
+    "esbuild.mjs",
+    "esbuild.js",
+    "build.sh",
+    "**/db.js",
+    "**/server.js",
+    "**/logging.js",
+    "**/config.js",
+    "**/extractJWT.js",
+    "**/routes/**",
+    "**/group.js "
+  ],
+  "lines": 50,
+  "functions": 50,
+  "branches": 50,
+  "check-coverage": true,
+  "cache": true,
+  "all": true
+}

@@ -52,6 +52,14 @@ const responseMessages = {
 };
 const sendResponse = (res, msgKey, code, payload = {}) => {
   const data = payload ? payload?.data : undefined;
+  if (process.env.NODE_ENV === "test") {
+    return {
+      success: code >= 200 && code < 300,
+      code: code,
+      msg: msgKey,
+      data,
+    };
+  }
   return res.status(code).json({
     success: code >= 200 && code < 300,
     code: code,

@@ -1,7 +1,16 @@
 const db = require("../db");
 
 class Client {
-  constructor(username, password, name, address, phone, date, cityId, rolId) {
+  constructor({
+    username,
+    password,
+    name,
+    address,
+    phone,
+    date,
+    cityId,
+    rolId,
+  }) {
     this.username = username;
     this.password = password;
     this.name = name;
@@ -16,13 +25,14 @@ class Client {
     //sanitizar params
     try {
       const sql =
-        "INSERT INTO orders.client(username, password, name, address, phone1, city_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO client(username, password, name, address, phone1, date, city_id, rol_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
       const values = [
         this.username,
         this.password,
         this.name,
         this.address,
         this.phone1,
+        this.date,
         this.city_id,
         this.rol_id,
       ];
@@ -37,7 +47,7 @@ class Client {
   static async getClient(params) {
     const { clientId } = params;
     try {
-      const sql = `SELECT id, name, username, password FROM orders.client WHERE id=${clientId}`;
+      const sql = `SELECT id, name, username, password FROM client WHERE id=${clientId}`;
       const rows = await db.query(sql);
       return rows[0];
     } catch (error) {

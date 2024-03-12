@@ -7,7 +7,7 @@ const getAllUser = async (req, res) => {
   try {
     logging.info(NAMESPACE, "getAllUser Method");
     const users = await User.getAllGroupUser();
-    sendResponse(res, "GET_USERS", 200, {
+    return sendResponse(res, "GET_USERS", 200, {
       data: { users },
     });
   } catch (error) {
@@ -19,7 +19,7 @@ const getUserById = async (req, res) => {
     logging.info(NAMESPACE, "getUserById Method");
     const userId = req.params.userId;
     const user = await User.getUserById(userId);
-    sendResponse(res, "GET_USER", 200, {
+    return sendResponse(res, "GET_USER", 200, {
       data: { user },
     });
   } catch (error) {
@@ -31,7 +31,7 @@ const updateUser = async (req, res) => {
   try {
     logging.info(NAMESPACE, "UpdateActiveUser Method");
     await User.updateUser(req.body);
-    sendResponse(res, "UPDATE_ACTIVE_USERS", 200, {});
+    return sendResponse(res, "UPDATE_ACTIVE_USERS", 200, {});
   } catch (error) {
     console.error("Error:", error);
   }

@@ -15,9 +15,9 @@ class Group {
       active,
       gr.name AS group_name
   FROM
-      orders.user u
-      LEFT JOIN orders.rol ON rol.id = u.rol_id
-      LEFT JOIN orders.group gr ON gr.id = u.group_id
+      user u
+      LEFT JOIN rol ON rol.id = u.rol_id
+      LEFT JOIN group gr ON gr.id = u.group_id
   `;
       const rows = await db.query(sql);
       return rows;
@@ -29,7 +29,7 @@ class Group {
 
   static async getAllRols() {
     try {
-      const sql = `SELECT id,name FROM orders.rol`;
+      const sql = `SELECT id,name FROM rol`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {
@@ -40,7 +40,7 @@ class Group {
   static async getAllGroups() {
     try {
       const sql = `SELECT g.id as id, g.name as name, JSON_ARRAYAGG(p.name) AS permissions
-      FROM orders.group g
+      FROM group g
       JOIN group_permission gp ON g.id = gp.group_id
       JOIN permission p ON gp.permission_id = p.id
       GROUP BY g.id, g.name;`;
@@ -54,7 +54,7 @@ class Group {
 
   static async getAllPermissions() {
     try {
-      const sql = `SELECT id, name FROM orders.permission;`;
+      const sql = `SELECT id, name FROM permission;`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {
@@ -66,7 +66,7 @@ class Group {
   static async getGroupById(groupId) {
     try {
       const sql = `SELECT g.id, g.name, JSON_ARRAYAGG(p.name) AS permissions
-      FROM orders.group g
+      FROM group g
       JOIN group_permission gp ON g.id = gp.group_id
       JOIN permission p ON gp.permission_id = p.id
       WHERE g.id = ${groupId}
@@ -82,7 +82,7 @@ class Group {
 
   static async getGroupByName(name) {
     try {
-      const sql = `SELECT id, name FROM orders.group WHERE name="${name}"`;
+      const sql = `SELECT id, name FROM \`group\` WHERE name="${name}"`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {
@@ -101,7 +101,7 @@ class Group {
           return `${key} = ${value}`;
         })
         .join(", ");
-      const sql = `UPDATE orders.group SET ${updateSet} WHERE id = ${params.groupId};`;
+      const sql = `UPDATE group SET ${updateSet} WHERE id = ${params.groupId};`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {
@@ -112,7 +112,7 @@ class Group {
 
   async createGroup() {
     try {
-      const sql = "INSERT INTO orders.group(name) VALUES (?)";
+      const sql = "INSERT INTO group(name) VALUES (?)";
       const values = [this.name];
       const rows = await db.query(sql, values);
       return rows;
@@ -129,7 +129,7 @@ class Group {
         groupId,
       ]);
       const placeholders = values.map(() => "(?, ?)").join(", ");
-      const sql = `INSERT INTO orders.group_permission(permission_id, group_id) VALUES ${placeholders}`;
+      const sql = `INSERT INTO group_permission(permission_id, group_id) VALUES ${placeholders}`;
       const flattenedValues = values.flat();
       const rows = await db.query(sql, flattenedValues);
       return rows;
@@ -146,8 +146,8 @@ class Group {
         g.name,
         JSON_ARRAYAGG(p.name) AS permissions
     FROM 
-      orders.group g
-      JOIN orders.user u ON u.group_id = g.id
+    \`group\` g
+      JOIN user u ON u.group_id = g.id
       JOIN group_permission gp ON g.id = gp.group_id
       JOIN permission p ON gp.permission_id = p.id
       WHERE u.id = ${userId}

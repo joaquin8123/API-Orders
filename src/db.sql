@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `test_orders`.`client` (
   `dni` VARCHAR(255) NULL DEFAULT NULL,
   `username` VARCHAR(45) NULL DEFAULT NULL,
   `password` VARCHAR(255) NULL DEFAULT NULL,
+  `active` BOOLEAN NULL DEFAULT NULL,
   `rol_id` INT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `city_id` (`city_id` ASC) VISIBLE,

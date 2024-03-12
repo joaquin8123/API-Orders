@@ -1,7 +1,7 @@
 const db = require("../db");
 
 class User {
-  constructor(username, password, rolId, groupId, active) {
+  constructor({ username, password, rolId, groupId, active }) {
     this.username = username;
     this.password = password;
     this.rolId = rolId;
@@ -13,7 +13,7 @@ class User {
     //sanitizar params
     try {
       const sql =
-        "INSERT INTO orders.user(username, password, rol_id, group_id, active) VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO user(username, password, rol_id, group_id, active) VALUES (?, ?, ?, ?, ?)";
       const values = [
         this.username,
         this.password,
@@ -31,9 +31,9 @@ class User {
 
   static async getUser(params) {
     const { username, type } = params;
-    const table = type === "user" ? "orders.user" : "orders.client";
+    const table = type === "user" ? "user" : "client";
     try {
-      const sql = `SELECT u.id, username, password, rol.name AS role, active FROM ${table} u LEFT JOIN orders.rol ON rol.id = u.rol_id WHERE username="${username}"`;
+      const sql = `SELECT u.id, username, password, rol.name AS role, active FROM ${table} u LEFT JOIN rol ON rol.id = u.rol_id WHERE username="${username}"`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {
@@ -51,9 +51,9 @@ class User {
       active,
       gr.name AS group_name
   FROM
-      orders.user u
-      LEFT JOIN orders.rol ON rol.id = u.rol_id
-      LEFT JOIN orders.group gr ON gr.id = u.group_id
+      user u
+      LEFT JOIN rol ON rol.id = u.rol_id
+      LEFT JOIN \`group\` gr ON gr.id = u.group_id
   `;
       const rows = await db.query(sql);
       return rows;
@@ -73,7 +73,7 @@ class User {
           return `${key} = ${value}`;
         })
         .join(", ");
-      const sql = `UPDATE orders.user SET ${updateSet} WHERE id = ${params.userId};`;
+      const sql = `UPDATE user SET ${updateSet} WHERE id = ${params.userId};`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {
@@ -91,9 +91,9 @@ class User {
       active,
       gr.name AS group_name
   FROM
-      orders.user u
-      LEFT JOIN orders.rol ON rol.id = u.rol_id
-      LEFT JOIN orders.group gr ON gr.id = u.group_id
+      user u
+      LEFT JOIN rol ON rol.id = u.rol_id
+      LEFT JOIN \`group\` gr ON gr.id = u.group_id
   WHERE 
       u.id = ${userId}
       `;

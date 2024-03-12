@@ -22,11 +22,6 @@ class Database {
               : process.env.DATABASE,
         });
 
-        console.log(
-          "Conexión exitosa a la base de datos:",
-          this.connection.config.database
-        );
-
         this.connection.on("error", (err) => {
           console.error(
             "Error en la conexión a la base de datos:",
@@ -58,8 +53,7 @@ class Database {
 
   async close() {
     try {
-      await this.connection.end();
-      console.log("Conexión cerrada correctamente.");
+      return await this.connection.end();
     } catch (error) {
       console.error("Error al cerrar la conexión:", error.message);
       throw error;
@@ -69,27 +63,26 @@ class Database {
   async clearDatabase() {
     try {
       const tables = [
+        "orderline",
+        "orders",
         "client",
         "city",
         "category",
         "state",
+        "user",
         "rol",
+        "`group`",
         "employee",
         "supplier",
         "order_purchase",
         "product",
         "order_purchase_product",
-        "orderline",
         "position",
-        "user",
-        "`order`",
       ];
 
       for (const table of tables) {
         await this.query(`DELETE FROM ${table}`);
       }
-
-      console.log("Base de datos limpia correctamente.");
     } catch (error) {
       console.error("Error al limpiar la base de datos:", error.message);
       throw error;
@@ -98,18 +91,37 @@ class Database {
   async insert({ tableName, data }) {
     try {
       const keys = Object.keys(data);
+
+      // Verificar si hay datos para insertar
+      if (keys.length === 0) {
+        return;
+      }
+
       const values = Object.values(data);
 
-      const placeholders = values.map(() => "?").join(", ");
+      const placeholders = keys.map(() => "?").join(", ");
       const sql = `INSERT INTO ${tableName} (${keys.join(
         ", "
       )}) VALUES (${placeholders})`;
-
-      await this.query(sql, values);
-
-      console.log("Datos insertados correctamente.");
+      return await this.query(sql, values);
     } catch (error) {
       console.error("Error al insertar datos:", error.message);
+      throw error;
+    }
+  }
+
+  async getItem({ tableName, keyName, keyValue }) {
+    try {
+      const sql = `SELECT * FROM ${tableName} WHERE ${keyName}=${keyValue}`;
+      const result = await this.query(sql);
+
+      if (result.length > 0) {
+        return result[0];
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Error al buscar datos:", error.message);
       throw error;
     }
   }

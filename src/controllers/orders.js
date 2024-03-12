@@ -10,7 +10,7 @@ const getOrders = async (req, res) => {
     logging.info(NAMESPACE, "GetOrders Method");
     const offset = req.params.offset || 0;
     const orders = await Order.getOrders(offset);
-    sendResponse(res, "GET_ORDERS", 200, {
+    return sendResponse(res, "GET_ORDERS", 200, {
       data: { orders, count: orders.length },
     });
   } catch (error) {
@@ -23,7 +23,7 @@ const getAllOrders = async (req, res) => {
     logging.info(NAMESPACE, "GetAllOrders Method");
     const status = req.params.status;
     const orders = await Order.getAllOrdersByStatus(status);
-    sendResponse(res, "GET_ALL_ORDERS", 200, {
+    return sendResponse(res, "GET_ALL_ORDERS", 200, {
       data: { orders, count: orders.length },
     });
   } catch (error) {
@@ -98,21 +98,21 @@ const createOrder = async (req, res) => {
       products,
     });
     const client = await Client.getClient({ clientId });
-    const io = req.app.get("socketio");
-    io.emit("order-updated", {
-      source: "backoffice",
-      order: {
-        orderId: order.insertId,
-        client: client.name,
-        status: "PENDING",
-        amount,
-        date: orderInstance.date,
-        deliveryTime,
-      },
-    });
-    sendResponse(res, "ORDER_SUCCESS", 201, { data: order });
+    // const io = req.app.get("socketio");
+    // io.emit("order-updated", {
+    //   source: "backoffice",
+    //   order: {
+    //     orderId: order.insertId,
+    //     client: client.name,
+    //     status: "PENDING",
+    //     amount,
+    //     date: orderInstance.date,
+    //     deliveryTime,
+    //   },
+    // });
+    return sendResponse(res, "ORDER_SUCCESS", 201, { data: order });
   } catch (error) {
-    sendResponse(res, "ORDER_ERROR", 500, { data: error });
+    return sendResponse(res, "ORDER_ERROR", 500, { data: error });
   }
 };
 
@@ -131,11 +131,11 @@ const updateOrder = async (req, res) => {
     logging.info(NAMESPACE, "updateOrder Method");
     const { orderId, status } = req.body;
     await Order.updateOrderStatus({ orderId, status });
-    const io = req.app.get("socketio");
-    io.emit("order-updated", { source: "app", orderId, status });
-    sendResponse(res, "ORDER_UPDATE_SUCCESS", 200);
+    // const io = req.app.get("socketio");
+    // io.emit("order-updated", { source: "app", orderId, status });
+    return sendResponse(res, "ORDER_UPDATE_SUCCESS", 200);
   } catch (error) {
-    sendResponse(res, "ORDER_ERROR", 500, { data: error });
+    return sendResponse(res, "ORDER_ERROR", 500, { data: error });
   }
 };
 

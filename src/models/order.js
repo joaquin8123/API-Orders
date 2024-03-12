@@ -29,9 +29,9 @@ class Order {
       ord.status,
       ord.delivery_time,
       JSON_ARRAYAGG(JSON_OBJECT('id', p.id, 'name', p.name, 'quantity', ol.quantity)) AS products,
-      (SELECT count(*) FROM  orders.order) AS totalItems
+      (SELECT count(*) FROM orders) AS totalItems
     FROM
-      orders.order AS ord
+      orders AS ord
     JOIN
       orderline AS ol ON ord.id = ol.order_id
     JOIN
@@ -44,6 +44,7 @@ class Order {
       ord.date DESC
     LIMIT 10
     OFFSET ${offset};`;
+
       const rows = await db.query(sql);
       // Transformar los resultados en un formato más limpio
       const orders = parseData(rows);
@@ -66,7 +67,7 @@ class Order {
       ord.delivery_time,
       JSON_ARRAYAGG(JSON_OBJECT('id', p.id, 'name', p.name, 'quantity', ol.quantity)) AS products
     FROM
-      orders.order AS ord
+    orders AS ord
     JOIN
       orderline AS ol ON ord.id = ol.order_id
     JOIN
@@ -125,7 +126,7 @@ class Order {
 
   static async getOrderById(orderId) {
     try {
-      const sql = `SELECT cli.name AS name,ord.date,ord.amount,ord.status,ord.delivery_time FROM orders.order ord JOIN orders.client cli ON cli.id = ord.client_id  WHERE ord.id=${orderId}`;
+      const sql = `SELECT cli.name AS name,ord.date,ord.amount,ord.status,ord.delivery_time FROM orders ord JOIN client cli ON cli.id = ord.client_id  WHERE ord.id=${orderId}`;
       const row = await db.query(sql);
 
       // Transformar los resultados en un formato más limpio
@@ -140,7 +141,7 @@ class Order {
 
   static async getOrderByClientId(clientId) {
     try {
-      const sql = `SELECT id AS order_id, status, date, amount, delivery_time FROM orders.order WHERE client_id= ${clientId} ORDER BY orders.order.date DESC`;
+      const sql = `SELECT id AS order_id, status, date, amount, delivery_time FROM orders WHERE client_id= ${clientId} ORDER BY orders.date DESC`;
       const row = await db.query(sql);
 
       // Transformar los resultados en un formato más limpio
@@ -157,7 +158,7 @@ class Order {
     //sanitizar params
     try {
       const sql =
-        "INSERT INTO orders.order(date, client_id, status,amount,delivery_time) VALUES (?, ?, ?, ?, ?)";
+        "INSERT INTO orders(date, client_id, status,amount,delivery_time) VALUES (?, ?, ?, ?, ?)";
       const values = [
         this.date,
         this.client_id,
@@ -206,7 +207,7 @@ class Order {
   static async updateOrderStatus({ orderId, status }) {
     //sanitizar paramss
     try {
-      const sql = `UPDATE orders.order SET status = '${status}' WHERE id = ${orderId};`;
+      const sql = `UPDATE orders SET status = '${status}' WHERE id = ${orderId};`;
       const rows = await db.query(sql);
       return rows;
     } catch (error) {
