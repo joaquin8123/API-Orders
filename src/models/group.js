@@ -112,7 +112,7 @@ class Group {
 
   async createGroup() {
     try {
-      const sql = "INSERT INTO  \`group\`(name) VALUES (?)";
+      const sql = "INSERT INTO  `group`(name) VALUES (?)";
       const values = [this.name];
       const rows = await db.query(sql, values);
       return rows;
@@ -140,6 +140,7 @@ class Group {
   }
 
   static async getPermissionsByUserId(userId) {
+    console.log(userId);
     try {
       const sql = `SELECT 
       g.id,
@@ -153,6 +154,7 @@ class Group {
       WHERE u.id = ${userId}
       GROUP BY g.id, g.name;`;
       const rows = await db.query(sql);
+      console.log("rows", rows);
       return rows;
     } catch (error) {
       console.error("Error fetching user:", error);
