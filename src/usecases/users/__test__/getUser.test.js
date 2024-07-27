@@ -1,32 +1,54 @@
-import MakeFakeDb from '../../../../__test__/MakeFakeDb';
-import { makeFakeClient } from '../../../../__test__/mocks/makeFakeClient';
-import { makeFakeUserCredentials } from '../../../../__test__/mocks/makeUserCredentials';
-import { expect } from '../../../../__test__/defaultTestDependencies';
-import { expectThrowsAsync } from '../../../../__test__/expectThrowsAsync';
+const { ERRORS_MESSAGES } = require("../../../constants");
+const { makeFakeUserDb } = require("../../../__test__/makeFakeDataDb");
+const dbInstance = require("../../../db");
+const { getUser } = require("../index");
+const { initalConfigs } = require("../../../__test__/initalConfig");
+const { expect } = require("chai");
+const { expectThrowsAsync } = require("../../../__test__/defaultExpect");
 
-import makeGetUserUseCase from '../getUser';
-import { ERRORS_MESSAGES } from '../../../constants';
+before(async () => {
+  await dbInstance.connect();
+});
 
-describe('Get User - Unit Test', () => {
-  it('Should retrieve user correctly', async () => {
-    const { username } = makeFakeUserCredentials();
-    const clientsModel = new MakeFakeDb();
-    clientsModel.findOne = async ({ _params }) => makeFakeClient();
-    const getUser = makeGetUserUseCase({ dependencies: { clientsModel } });
-    const res = await getUser({ params: { username } });
-    expect(res).to.be.an('object');
+after(async () => {
+  await dbInstance.close();
+});
+
+describe("Get User - Use case Test", () => {
+  beforeEach(async () => {
+    await dbInstance.clearDatabase();
+    await initalConfigs({});
   });
+  it("Should get user successfully", async () => {
+    const params = makeFakeUserDb();
+    await dbInstance.insert({
+      tableName: "user",
+      data: params,
+    });
 
-  it('Should fail due to missing user', async () => {
-    const { username } = makeFakeUserCredentials();
-    const clientsModel = new MakeFakeDb();
-    clientsModel.findOne = async ({ _params }) => {
-      throw Error(ERRORS_MESSAGES.MISSING_USER);
-    };
-    const getUser = makeGetUserUseCase({ dependencies: { clientsModel } });
+    const response = await getUser({ params: { ...params, type: "user" } });
+    expect(response.length).to.be.equal(1);
+    const { id, username, active } = response[0];
+    expect(id).to.be.equal(params.id);
+    expect(username).to.be.equal(params.username);
+    expect(active).to.be.equal(1);
+  });
+  it("Should fail due to missing user", async () => {
     await expectThrowsAsync(
-      () => getUser({ params: { username } }),
-      ERRORS_MESSAGES.MISSING_USER,
+      () => getUser({ params: { username: "fake" } }),
+      ERRORS_MESSAGES.MISSING_USER
+    );
+  });
+  it("Should fail due to unactive user", async () => {
+    const params = makeFakeUserDb({ active: false });
+    await dbInstance.insert({
+      tableName: "user",
+      data: params,
+    });
+
+    await expectThrowsAsync(
+      () => getUser({ params: { username: params.username } }),
+      ERRORS_MESSAGES.MISSING_USER
     );
   });
 });

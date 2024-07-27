@@ -10,6 +10,17 @@ const defaultExpect = (params) => {
   });
 };
 
+const expectThrowsAsync = async (method, errorMessage) => {
+  try {
+    const response = await method();
+    expect(response).to.be.an("Error");
+  } catch (error) {
+    expect(error).to.be.an("Error");
+    expect(error.message).to.equal(errorMessage);
+  }
+};
+
 module.exports = {
   defaultExpect,
+  expectThrowsAsync,
 };

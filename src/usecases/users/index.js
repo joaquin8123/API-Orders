@@ -1,26 +1,29 @@
-import getUserUsecase from './getUser';
-import { clientsModel } from "../../models/dynamo";
+const { getUserUsecase } = require("./getUser");
+const userModel = require("../../models/user");
+const logging = require("../../config/logging");
 // import makeVerifyPasswordHashUsecase from './verifyPasswordHash';
 // import { decrypt } from '../../helpers/cryptoHelpers';
 // import createUserUsecase from "./createUser";
-// import { clientsEntity } from "../../entities/clients";
+import { crea } from "../../entities/clients";
 
 const getUser = getUserUsecase({
   dependencies: {
-    clientsModel,
+    userModel,
+    logging,
   },
 });
 
-// const createUser = createUserUsecase({
-//   dependencies: {
-//     clientsModel,
-//     clientsEntity,
-//   },
-// });
-// const verifyPasswordHash = makeVerifyPasswordHashUsecase({
-//   dependencies: {
-//     decrypt,
-//   },
-// });
+const createUser = createUserUsecase({
+  dependencies: {
+    clientsModel,
+    clientsEntity,
+  },
+});
 
-export { getUser, createUser, verifyPasswordHash };
+const verifyPasswordHash = makeVerifyPasswordHashUsecase({
+  dependencies: {
+    decrypt,
+  },
+});
+
+module.exports = { createUser };

@@ -1,30 +1,32 @@
-import { ERRORS_CODES, ERRORS_MESSAGES } from '../../constants';
+const { ERRORS_CODES, ERRORS_MESSAGES } = require("../../constants");
 
-const makeCreateUserUsecase = ({ dependencies }) => async ({ params }) => {
-  const { clientsModel, clientsEntity } = dependencies;
-  const { username, email, company, tx = '', mainTx = '', accountId = '' } = params;
+const createUserUsecase =
+  ({ dependencies }) =>
+  async ({ params }) => {
+    const { clientsModel, clientsEntity } = dependencies;
+    const { username, email } = params;
 
-  const commonLogAttributes = { tx, mainTx, accountId };
-  logger.logInfo({
-    ...commonLogAttributes,
-    message: 'Proceed to validate create-client params.',
-    metadata: { username, email, company },
-  });
-  try {
-    const clientRecord = clientsEntity({ params });
     logger.logInfo({
-      ...commonLogAttributes,
-      message: 'Client validated ok',
-      metadata: { username, email, company },
+      message: "Proceed to validate create-client params.",
+      metadata: { username, email },
     });
-    const response = await clientsModel.createIfNotExists(clientRecord, 'username');
-    return response;
-  } catch (error) {
-    throwCustomError(error, dependencies);
-  }
-};
+    try {
+      const clientRecord = clientsEntity({ params });
+      logger.logInfo({
+        message: "Client validated ok",
+        metadata: { username, email },
+      });
+      const response = await clientsModel.createIfNotExists(
+        clientRecord,
+        "username"
+      );
+      return response;
+    } catch (error) {
+      throwCustomError(error, dependencies);
+    }
+  };
 
-export default makeCreateUserUsecase;
+module.exports = { createUserUsecase };
 
 const throwCustomError = (error, dependencies) => {
   const { customExceptionInstance } = dependencies;

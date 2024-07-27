@@ -1,22 +1,22 @@
-import MakeFakeDb from '../../../../__test__/MakeFakeDb';
-import { makeFakeClient } from '../../../../__test__/mocks/makeFakeClient';
-import { expect } from '../../../../__test__/defaultTestDependencies';
-import makeCreateUserUsecase from '../createUser';
-import { DEFAULT_SAVE_USER_RESPONSE } from '../../../../__test__/clientTestHelpers';
-import { clientsEntity } from '../../../entities/clients';
-describe('Create User - Unit Test', () => {
-  const clientsModel = new MakeFakeDb();
-  clientsModel.createIfNotExists = async () =>
-    Promise.resolve(DEFAULT_SAVE_USER_RESPONSE);
+import MakeFakeDb from "../../../../__test__/MakeFakeDb";
+import { makeFakeClient } from "../../../../__test__/mocks/makeFakeClient";
+import { expect } from "../../../../__test__/defaultTestDependencies";
+import makeCreateUserUsecase, { createUserUsecase } from "../createUser";
+import { DEFAULT_SAVE_USER_RESPONSE } from "../../../../__test__/clientTestHelpers";
+import { clientsEntity } from "../../../entities/clients";
+import { makeFakeClientDb } from "../../../__test__/makeFakeDataDb";
 
-  const createUser = makeCreateUserUsecase({
-    dependencies: {
-      clientsModel,
-      clientsEntity,
-    },
-  });
-  it('Should create a user record properly', async () => {
-    const params = makeFakeClient({ plainPassword: true });
+before(async () => {
+  await dbInstance.connect();
+});
+
+after(async () => {
+  await dbInstance.close();
+});
+describe.only("Create User - Use case Test", () => {
+  it("Should create a client successfuly", async () => {
+    const params = makeFakeClientDb();
+    createUserUsecase;
     const response = await createUser({ params });
     expect(response).to.deep.equal(DEFAULT_SAVE_USER_RESPONSE);
   });

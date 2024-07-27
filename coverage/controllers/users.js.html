@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.54% </span>
+                <span class="strong">27.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>35/44</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">62.5% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>5/8</span>
+                <span class='fraction'>12/44</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.54% </span>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/3</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">27.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>35/44</span>
+                <span class='fraction'>12/44</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -115,36 +115,36 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -158,38 +158,38 @@ const NAMESPACE = "User Controller";
 &nbsp;
 const getAllUser = async (req, res) =&gt; {
   try {
-    logging.info(NAMESPACE, "getAllUser Method");
-    const users = await User.getAllGroupUser();
-    return sendResponse(res, "GET_USERS", 200, {
-      data: { users },
-    });
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-<span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >const getUserById = async (req, res) =&gt; {</span></span>
+    logging.info(NAMESPACE, "g<span class="fstat-no" title="function not covered" >etAllUser Method");</span>
+<span class="cstat-no" title="statement not covered" >    const users = await User.getAllGroupUser();</span>
+<span class="cstat-no" title="statement not covered" >    return sendResponse(res, "GET_USERS", 200, {</span>
+<span class="cstat-no" title="statement not covered" >      data: { users },</span>
+<span class="cstat-no" title="statement not covered" >    });</span>
+<span class="cstat-no" title="statement not covered" >  } catch (error) {</span>
+<span class="cstat-no" title="statement not covered" >    console.error("Error:", error);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >};</span>
+<span class="cstat-no" title="statement not covered" >const getUserById = async (req, res) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
-    logging.info(NAMESPACE, "getUserById Method");
-    const userId = req.params.userId;
-    const user = await User.getUserById(userId);
-    return sendResponse(res, "GET_USER", 200, {
-      data: { user },
-    });
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-<span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span>
+    logging.info(NAMESPACE, "g<span class="fstat-no" title="function not covered" >etUserById Method");</span>
+<span class="cstat-no" title="statement not covered" >    const userId = req.params.userId;</span>
+<span class="cstat-no" title="statement not covered" >    const user = await User.getUserById(userId);</span>
+<span class="cstat-no" title="statement not covered" >    return sendResponse(res, "GET_USER", 200, {</span>
+<span class="cstat-no" title="statement not covered" >      data: { user },</span>
+<span class="cstat-no" title="statement not covered" >    });</span>
+<span class="cstat-no" title="statement not covered" >  } catch (error) {</span>
+<span class="cstat-no" title="statement not covered" >    console.error("Error:", error);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >};</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >const updateUser = async (req, res) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
-    logging.info(NAMESPACE, "UpdateActiveUser Method");
-    await User.updateUser(req.body);
-    return sendResponse(res, "UPDATE_ACTIVE_USERS", 200, {});
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-<span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span>
+    logging.info(NAMESPACE, "U<span class="fstat-no" title="function not covered" >pdateActiveUser Method");</span>
+<span class="cstat-no" title="statement not covered" >    await User.updateUser(req.body);</span>
+<span class="cstat-no" title="statement not covered" >    return sendResponse(res, "UPDATE_ACTIVE_USERS", 200, {});</span>
+<span class="cstat-no" title="statement not covered" >  } catch (error) {</span>
+<span class="cstat-no" title="statement not covered" >    console.error("Error:", error);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >};</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >module.exports = {</span>
 <span class="cstat-no" title="statement not covered" >  getAllUser,</span>
 <span class="cstat-no" title="statement not covered" >  updateUser,</span>
@@ -202,7 +202,7 @@ const getAllUser = async (req, res) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-03-12T19:11:55.237Z
+                at 2024-07-21T22:16:40.772Z
             </div>
         <script src="../prettify.js"></script>
         <script>
