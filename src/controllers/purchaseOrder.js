@@ -79,7 +79,6 @@ const createPurchaseOrder = async (req, res) => {
       data: purchaseOrder,
     });
   } catch (error) {
-    console.log("asda", error);
     return sendResponse(res, "PURCHASE_ORDER_ERROR", 500, { data: error });
   }
 };
@@ -99,7 +98,6 @@ const getLastNumeration = async (req, res) => {
   try {
     logging.info(NAMESPACE, "getLastNumeration Method");
     const { lastNumeration } = await PurchaseOrder.lastNumeration();
-    console.log("lastNumeration", lastNumeration);
     if (!lastNumeration.length)
       return sendResponse(res, "GET_PURCHASE_ORDER_NUMERATION_NOT_FOUND", 404);
     return sendResponse(res, "GET_PURCHASE_ORDER_NUMERATION_SUCCESS", 200, {

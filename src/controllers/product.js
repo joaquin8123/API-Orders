@@ -69,8 +69,6 @@ const createProduct = async (req, res) => {
       active,
     });
 
-    console.log("product", product);
-
     return product
       .createProduct()
       .then((product) =>

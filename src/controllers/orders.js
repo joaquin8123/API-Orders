@@ -151,7 +151,6 @@ const updateOrder = async (req, res) => {
   try {
     logging.info(NAMESPACE, "updateOrder Method");
     const { orderId, status, userId } = req.body;
-    console.log("userId", userId);
     await Order.updateOrderStatus({ orderId, status });
     const io = req.app.get("socketio");
     io.emit("order-updated", { source: "app", orderId, status });
