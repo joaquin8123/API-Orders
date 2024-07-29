@@ -6,6 +6,7 @@ const orderController = require("../controllers/orders");
 router.get("/monthlyAmount", extractJWT, orderController.monthlyAmount);
 router.get("/salesByMonth", extractJWT, orderController.salesByMonth);
 router.get("/salesByProduct", extractJWT, orderController.salesByProduct);
+router.get("/auditReport", extractJWT, orderController.auditReport);
 router.get("/client/:clientId", extractJWT, orderController.getOrdersByClient);
 router.get("/id/:orderId", extractJWT, orderController.getOderById);
 router.get("/:offset", extractJWT, orderController.getOrders);

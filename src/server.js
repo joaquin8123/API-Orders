@@ -11,6 +11,8 @@ const config = require("./config/config");
 const productRoutes = require("./routes/product");
 const authRoutes = require("./routes/auth");
 const orderRoutes = require("./routes/orders");
+const purchaseOrderRoutes = require("./routes/PurchaseOrders");
+const supplierRoutes = require("./routes/suppliers");
 const userRoutes = require("./routes/user");
 const groupRoutes = require("./routes/group");
 
@@ -46,8 +48,10 @@ app.use(cors(corsOptions));
 app.use("/product", productRoutes);
 app.use("/auth", authRoutes);
 app.use("/order", orderRoutes);
+app.use("/purchase-order", purchaseOrderRoutes);
 app.use("/user", userRoutes);
 app.use("/group", groupRoutes);
+app.use("/supplier", supplierRoutes);
 
 /* Error handling */
 app.use((req, res, next) => {

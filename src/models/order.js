@@ -113,6 +113,17 @@ class Order {
     }
   }
 
+  static async auditReport() {
+    try {
+      const sql = `SELECT action, user_id, client_id, date FROM audit;`;
+      const rows = await db.query(sql);
+      return rows;
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      throw error;
+    }
+  }
+
   static async salesByProduct() {
     try {
       const sql = `CALL get_order_count_per_product();`;

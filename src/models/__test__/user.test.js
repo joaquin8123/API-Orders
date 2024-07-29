@@ -140,7 +140,6 @@ describe("User Test - Model", () => {
     });
 
     const user = await User.getAllGroupUser();
-    console.log("USER", user);
     expect(user[0].id).to.equal(params.id);
     expect(user[0].username).to.equal(params.username);
     expect(user[0].active).to.equal(1);

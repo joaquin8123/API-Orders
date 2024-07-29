@@ -3,6 +3,8 @@ const sendResponse = require("../helpers/handleResponse");
 const Client = require("../models/client");
 const Order = require("../models/order");
 const Product = require("../models/product");
+const Audit = require("../models/audit");
+const EventEmitter = require("../helpers/EventEmitter");
 const NAMESPACE = "Orders Controller";
 
 const getOrders = async (req, res) => {
@@ -75,6 +77,12 @@ const createOrder = async (req, res) => {
       }
     }
     if (!isValidStock) {
+      await Audit.registerAudit({
+        action: "CREATE_ORDER_STOCK_ERROR",
+        user_id: null,
+        client_id: clientId,
+        details: { event: "Create order stock error" },
+      });
       return sendResponse(res, "CREATE_ORDER_STOCK_ERROR", 409, {
         data: "Product out of stock",
       });
@@ -99,7 +107,8 @@ const createOrder = async (req, res) => {
     });
     const client = await Client.getClient({ clientId });
     const io = req.app.get("socketio");
-    io.emit("order-updated", {
+    const eventEmitter = new EventEmitter(io);
+    eventEmitter.emitOrderUpdated({
       source: "backoffice",
       order: {
         orderId: order.insertId,
@@ -110,8 +119,20 @@ const createOrder = async (req, res) => {
         deliveryTime,
       },
     });
+    await Audit.registerAudit({
+      action: "ORDER_SUCCESS",
+      user_id: null,
+      client_id: clientId,
+      details: { event: "Create order success", status: "PENDING" },
+    });
     return sendResponse(res, "ORDER_SUCCESS", 201, { data: order });
   } catch (error) {
+    await Audit.registerAudit({
+      action: "ORDER_ERROR",
+      user_id: null,
+      client_id: null,
+      details: { event: "Create order error", error },
+    });
     return sendResponse(res, "ORDER_ERROR", 500, { data: error });
   }
 };
@@ -129,13 +150,26 @@ const calculateAmountAndDeliveryTime = async (products) => {
 const updateOrder = async (req, res) => {
   try {
     logging.info(NAMESPACE, "updateOrder Method");
-    const { orderId, status } = req.body;
+    const { orderId, status, userId } = req.body;
+    console.log("userId", userId);
     await Order.updateOrderStatus({ orderId, status });
     const io = req.app.get("socketio");
     io.emit("order-updated", { source: "app", orderId, status });
+    await Audit.registerAudit({
+      action: "ORDER_UPDATE_SUCCESS",
+      user_id: userId,
+      client_id: null,
+      details: { event: "Update order success", status, order_id: orderId },
+    });
     return sendResponse(res, "ORDER_UPDATE_SUCCESS", 200);
   } catch (error) {
-    return sendResponse(res, "ORDER_ERROR", 500, { data: error });
+    await Audit.registerAudit({
+      action: "UPDATE_ORDER_ERROR",
+      user_id: null,
+      client_id: null,
+      details: { event: "Update order error", error },
+    });
+    return sendResponse(res, "UPDATE_ORDER_ERROR", 500, { data: error });
   }
 };
 
@@ -175,6 +209,18 @@ const salesByProduct = async (req, res) => {
   }
 };
 
+const auditReport = async (req, res) => {
+  try {
+    logging.info(NAMESPACE, "auditReport Method");
+    const auditReport = await Order.auditReport();
+    sendResponse(res, "AUDIT_REPORT", 200, {
+      data: { auditReport },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 module.exports = {
   getOrders,
   getOderById,
@@ -185,4 +231,5 @@ module.exports = {
   salesByMonth,
   salesByProduct,
   getAllOrders,
+  auditReport,
 };
